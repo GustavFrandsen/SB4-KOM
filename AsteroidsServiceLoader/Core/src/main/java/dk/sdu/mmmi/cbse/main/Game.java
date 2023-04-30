@@ -70,9 +70,9 @@ public class Game
         // Update
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
-        }
-         for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
-            postEntityProcessorService.process(gameData, world);
+            for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
+                postEntityProcessorService.process(gameData, world);
+            }
         }
     }
 

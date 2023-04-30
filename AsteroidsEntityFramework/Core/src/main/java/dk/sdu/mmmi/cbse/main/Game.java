@@ -10,11 +10,15 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
+import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+
+import java.util.Collection;
+import java.util.ServiceLoader;
 import dk.sdu.mmmi.cbse.managers.GameInputProcessor;
-import dk.sdu.mmmi.cbse.playersystem.PlayerControlSystem;
-import dk.sdu.mmmi.cbse.playersystem.PlayerPlugin;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class Game
         implements ApplicationListener {
@@ -26,6 +30,8 @@ public class Game
     private List<IEntityProcessingService> entityProcessors = new ArrayList<>();
     private List<IGamePluginService> entityPlugins = new ArrayList<>();
     private World world = new World();
+
+
 
     @Override
     public void create() {
@@ -43,13 +49,10 @@ public class Game
                 new GameInputProcessor(gameData)
         );
 
-        IGamePluginService playerPlugin = new PlayerPlugin();
 
-        IEntityProcessingService playerProcess = new PlayerControlSystem();
-        entityPlugins.add(playerPlugin);
-        entityProcessors.add(playerProcess);
+
         // Lookup all Game Plugins using ServiceLoader
-        for (IGamePluginService iGamePlugin : entityPlugins) {
+        for (IGamePluginService iGamePlugin : getPluginServices()) {
             iGamePlugin.start(gameData, world);
         }
     }
@@ -72,15 +75,24 @@ public class Game
 
     private void update() {
         // Update
-        for (IEntityProcessingService entityProcessorService : entityProcessors) {
+        for (IEntityProcessingService entityProcessorService : getEntityProcessingServices())
+        {
             entityProcessorService.process(gameData, world);
+            for (IPostEntityProcessingService postEntityProcessingService : getPostEntityProcessingServices()){
+                postEntityProcessingService.process(gameData,world);
+            }
         }
     }
 
     private void draw() {
         for (Entity entity : world.getEntities()) {
-
-            sr.setColor(1, 1, 1, 1);
+            if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
+                sr.setColor(0, 1, 1, 1);
+            } else if (entity instanceof dk.sdu.mmmi.cbse.commonasteroid.Asteroid) {
+                sr.setColor(1, 165/255F, 0, 1);
+            } else {
+                sr.setColor(1,0,1,1);
+            }
 
             sr.begin(ShapeRenderer.ShapeType.Line);
 
@@ -88,8 +100,8 @@ public class Game
             float[] shapey = entity.getShapeY();
 
             for (int i = 0, j = shapex.length - 1;
-                    i < shapex.length;
-                    j = i++) {
+                 i < shapex.length;
+                 j = i++) {
 
                 sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
             }
@@ -112,5 +124,16 @@ public class Game
 
     @Override
     public void dispose() {
+    }
+    private Collection<? extends IGamePluginService> getPluginServices() {
+        return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
+
+    private Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
+        return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
+
+    private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
+        return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

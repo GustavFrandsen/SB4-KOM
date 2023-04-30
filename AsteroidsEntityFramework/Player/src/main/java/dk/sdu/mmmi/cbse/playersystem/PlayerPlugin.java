@@ -3,6 +3,7 @@ package dk.sdu.mmmi.cbse.playersystem;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
@@ -24,18 +25,20 @@ public class PlayerPlugin implements IGamePluginService {
 
     private Entity createPlayerShip(GameData gameData) {
 
-        float deacceleration = 10;
+        float deacceleration = 20;
         float acceleration = 200;
-        float maxSpeed = 300;
+        float maxSpeed = 350;
         float rotationSpeed = 5;
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
         float radians = 3.1415f / 2;
-        
+
         Entity playerShip = new Player();
+        playerShip.setRadius(10);
         playerShip.add(new MovingPart(deacceleration, acceleration, maxSpeed, rotationSpeed));
         playerShip.add(new PositionPart(x, y, radians));
-        
+        playerShip.add(new LifePart(1));
+
         return playerShip;
     }
 

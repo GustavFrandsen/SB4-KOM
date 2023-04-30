@@ -7,9 +7,7 @@ package dk.sdu.mmmi.cbse.common.data.entityparts;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.LEFT;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.RIGHT;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.UP;
+
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
@@ -18,8 +16,7 @@ import static java.lang.Math.sqrt;
  *
  * @author Alexander
  */
-public class MovingPart
-        implements EntityPart {
+public class MovingPart implements EntityPart {
 
     private float dx, dy;
     private float deceleration, acceleration;

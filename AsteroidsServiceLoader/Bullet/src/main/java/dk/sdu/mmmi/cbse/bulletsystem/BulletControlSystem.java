@@ -48,13 +48,13 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
         Entity bullet = new Bullet();
         bullet.setRadius(2);
 
-        float bx = (float) cos(radians) * shooter.getRadius() * bullet.getRadius();
-        float by = (float) sin(radians) * shooter.getRadius() * bullet.getRadius();
+        float bx = (float) cos(radians) * shooter.getRadius() * 5;
+        float by = (float) sin(radians) * shooter.getRadius() * 5;
 
         bullet.add(new PositionPart(bx + x, by + y, radians));
         bullet.add(new LifePart(1));
         bullet.add(new MovingPart(0, 5000000, speed, 5));
-        bullet.add(new TimerPart(1));
+        bullet.add(new TimerPart(3));
 
         bullet.setShapeX(new float[2]);
         bullet.setShapeY(new float[2]);
