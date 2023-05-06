@@ -34,7 +34,7 @@ public class CollisionDetector implements IPostEntityProcessingService {
 
     }
 
-    private boolean collides(Entity entity1, Entity entity2) {
+    protected boolean collides(Entity entity1, Entity entity2) {
         PositionPart entity1Pos = entity1.getPart(PositionPart.class);
         PositionPart entity2Pos = entity2.getPart(PositionPart.class);
         float dx = entity1Pos.getX() - entity2Pos.getX();

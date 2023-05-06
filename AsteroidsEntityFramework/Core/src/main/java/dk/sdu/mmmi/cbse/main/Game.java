@@ -12,24 +12,35 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
-import java.util.Collection;
-import java.util.ServiceLoader;
 import dk.sdu.mmmi.cbse.managers.GameInputProcessor;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import static java.util.stream.Collectors.toList;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class Game
-        implements ApplicationListener {
+
+
+public class Game implements ApplicationListener {
 
     private static OrthographicCamera cam;
     private ShapeRenderer sr;
 
     private final GameData gameData = new GameData();
-    private List<IEntityProcessingService> entityProcessors = new ArrayList<>();
-    private List<IGamePluginService> entityPlugins = new ArrayList<>();
-    private World world = new World();
+    private final List<IEntityProcessingService> entityProcessors;
+    private final List<IGamePluginService> entityPlugins;
+    private final List<IPostEntityProcessingService> postEntityProcessors;
+    private final World world = new World();
+
+
+    public Game(List<IEntityProcessingService> entityProcessors, List<IGamePluginService> entityPlugins, List<IPostEntityProcessingService> postEntityProcessors) {
+        this.entityProcessors = entityProcessors;
+        this.entityPlugins = entityPlugins;
+        this.postEntityProcessors = postEntityProcessors;
+    }
+
+
 
 
 
@@ -52,7 +63,7 @@ public class Game
 
 
         // Lookup all Game Plugins using ServiceLoader
-        for (IGamePluginService iGamePlugin : getPluginServices()) {
+        for (IGamePluginService iGamePlugin : entityPlugins) {
             iGamePlugin.start(gameData, world);
         }
     }
@@ -75,14 +86,13 @@ public class Game
 
     private void update() {
         // Update
-        for (IEntityProcessingService entityProcessorService : getEntityProcessingServices())
+        for (IEntityProcessingService entityProcessorService : entityProcessors)
         {
             entityProcessorService.process(gameData, world);
-            for (IPostEntityProcessingService postEntityProcessingService : getPostEntityProcessingServices()){
+            for (IPostEntityProcessingService postEntityProcessingService : postEntityProcessors)
                 postEntityProcessingService.process(gameData,world);
             }
         }
-    }
 
     private void draw() {
         for (Entity entity : world.getEntities()) {
@@ -136,4 +146,6 @@ public class Game
     private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
         return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
+
+
 }
