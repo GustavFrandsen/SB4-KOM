@@ -13,12 +13,8 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
 import dk.sdu.mmmi.cbse.managers.GameInputProcessor;
-import java.util.Collection;
 import java.util.List;
-import java.util.ServiceLoader;
 
-import static java.util.stream.Collectors.toList;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 
@@ -96,14 +92,7 @@ public class Game implements ApplicationListener {
 
     private void draw() {
         for (Entity entity : world.getEntities()) {
-            if (entity instanceof dk.sdu.mmmi.cbse.enemysystem.Enemy) {
-                sr.setColor(0, 1, 1, 1);
-            } else if (entity instanceof dk.sdu.mmmi.cbse.commonasteroid.Asteroid) {
-                sr.setColor(1, 165/255F, 0, 1);
-            } else {
-                sr.setColor(1,0,1,1);
-            }
-
+            sr.setColor(1,0,1,1);
             sr.begin(ShapeRenderer.ShapeType.Line);
 
             float[] shapex = entity.getShapeX();
@@ -134,17 +123,6 @@ public class Game implements ApplicationListener {
 
     @Override
     public void dispose() {
-    }
-    private Collection<? extends IGamePluginService> getPluginServices() {
-        return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
-
-    private Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
-        return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
-
-    private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
-        return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 
 

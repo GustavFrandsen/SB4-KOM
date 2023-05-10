@@ -12,7 +12,7 @@ import dk.sdu.mmmi.cbse.commonasteroid.Asteroid;
 import java.util.Random;
 
 public class AsteroidControlSystem implements IEntityProcessingService {
-    private AsteroidSplittet asteroidSplittet = new AsteroidSplittet();
+    private static final AsteroidSplittet asteroidSplittet = new AsteroidSplittet();
     @Override
     public void process(GameData gameData, World world) {
     for (Entity asteroid : world.getEntities(Asteroid.class)){

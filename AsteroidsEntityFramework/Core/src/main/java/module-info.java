@@ -1,9 +1,9 @@
 module Core {
+    opens dk.sdu.mmmi.cbse.main;
     requires Common;
     requires CommonBullet;
     requires CommonAsteroid;
     requires com.badlogic.gdx;
-    requires Enemy;
     requires spring.context;
     requires spring.beans;
     uses dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
